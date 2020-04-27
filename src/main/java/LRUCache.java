@@ -6,36 +6,32 @@ import java.util.HashMap;
  * If data is find in cache by get operation it will be added to head.
  * data is removed from the last if total data increased the capaciy
  */
-public class LRUCache {
-    Node head;
-    Node tail;
-    HashMap<String, Node> map;
-    int cap = 0;
+public class LRUCache<K,V> {
+    private Node<K,V> head;
+    private Node<K,V> tail;
+    private HashMap<K, Node<K,V>> map;
+    private int cap = 0;
 
     public LRUCache(int capacity) {
         this.cap = capacity;
         this.map = new HashMap<>();
     }
 
-    public static void main(String[] args) {
-        LRUCache lruCache = new LRUCache(5);
-
-        lruCache.put("1", "A");
-        lruCache.put("2", "B");
-        lruCache.put("3", "C");
-        lruCache.put("4", "D");
-        lruCache.put("5", "E");
-
-        System.out.println(lruCache.get("4"));
-    }
-
-    public String get(String key) {
+    /**
+     * This method is used to get the value based on key
+     * if the value exist in the cache ,and the node is not the head node
+     * if will delete the node and add again at the first place
+     *
+     * @param key based on which the value will be reterieved
+     * @return value if exist else null
+     */
+    public V get(K key) {
         if (map.get(key) == null) {
             return null;
         }
 
         //move to tail
-        Node t = map.get(key);
+        Node<K,V> t = map.get(key);
 
         removeNode(t);
         offerNode(t);
@@ -43,9 +39,18 @@ public class LRUCache {
         return t.value;
     }
 
-    public void put(String key, String value) {
+    /**
+     * This method is used to put the data in the Cache.
+     * if capacity is reach ,the it will delete the Least recently
+     * used data and add this at the head of the double linklist
+     *
+     * @param key   key of the data
+     * @param value value of the data
+     */
+
+    public void  put(K key, V value) {
         if (map.containsKey(key)) {
-            Node t = map.get(key);
+            Node<K,V> t = map.get(key);
             t.value = value;
 
             //move to tail
@@ -65,6 +70,11 @@ public class LRUCache {
         }
     }
 
+    /**
+     * This method is used to remove the node from the last
+     *
+     * @param n
+     */
     private void removeNode(Node n) {
         if (n.prev != null) {
             n.prev.next = n.next;
@@ -79,6 +89,11 @@ public class LRUCache {
         }
     }
 
+    /**
+     * This methid is put the node at the first place
+     *
+     * @param n node
+     */
     private void offerNode(Node n) {
         if (tail != null) {
             tail.next = n;
@@ -94,15 +109,19 @@ public class LRUCache {
     }
 }
 
-class Node {
+/**
+ * This class is used to have the structure of data that will be inserted
+ * in  doubly Linklist
+ */
+class Node<K,V> {
     Node prev;
     Node next;
-    String value;
-    String key;
+    V value;
+    K key;
 
-    public Node(String data, String key) {
-        this.value = data;
+    public  Node(K key, V value) {
         this.key = key;
+        this.value = value;
     }
 
 }
