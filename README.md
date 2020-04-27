@@ -42,3 +42,12 @@ I assume we have huge amount of data ,so we are going with distributed cache not
   * Fail-OveR: for this MAster salve implemention(Leader/Slave) , if LEader get donw ,Leader election will happen.
   * to reduce load on shards ,read(GET) will be allowd on any node (either leader or slave) but put can only happen through master.
   
+ ### Advantages –
+* It is open for full analysis.
+* In this, we replace the page which is least recently used, thus free from   Belady’s Anomaly.
+* Easy to choose page which has faulted and hasn’t been used for a long time.
+* FIFO in being able to adapt somewhat to the data access pattern; frequently used items are less likely to be ejected from the cache.
+* fast, adaptive, not scan resistant
+### Disadvantages –
+* It requires additional Data Structure to be implemented.
+* Hardware assistance is high.
