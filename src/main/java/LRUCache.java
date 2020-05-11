@@ -7,8 +7,8 @@ import java.util.HashMap;
  * data is removed from the last if total data increased the capaciy
  */
 public class LRUCache<K,V> {
-    private Node<K,V> head;
     private Node<K,V> tail;
+    private Node<K,V> head;
     private HashMap<K, Node<K,V>> map;
     private int cap = 0;
 
@@ -30,7 +30,7 @@ public class LRUCache<K,V> {
             return null;
         }
 
-        //move to tail
+        //move to head
         Node<K,V> t = map.get(key);
 
         removeNode(t);
@@ -53,17 +53,17 @@ public class LRUCache<K,V> {
             Node<K,V> t = map.get(key);
             t.value = value;
 
-            //move to tail
+            //move to head
             removeNode(t);
             offerNode(t);
         } else {
             if (map.size() >= cap) {
                 //delete head
-                map.remove(head.key);
-                removeNode(head);
+                map.remove(tail.key);
+                removeNode(tail);
             }
 
-            //add to tail
+            //add to head
             Node node = new Node(key, value);
             offerNode(node);
             map.put(key, node);
@@ -79,13 +79,13 @@ public class LRUCache<K,V> {
         if (n.prev != null) {
             n.prev.next = n.next;
         } else {
-            head = n.next;
+            tail = n.next;
         }
 
         if (n.next != null) {
             n.next.prev = n.prev;
         } else {
-            tail = n.prev;
+            head = n.prev;
         }
     }
 
@@ -95,17 +95,32 @@ public class LRUCache<K,V> {
      * @param n node
      */
     private void offerNode(Node n) {
-        if (tail != null) {
-            tail.next = n;
+        if (head != null) {
+            head.next = n;
         }
 
-        n.prev = tail;
+        n.prev = head;
         n.next = null;
-        tail = n;
+        head = n;
 
-        if (head == null) {
-            head = tail;
+        if (tail == null) {
+            tail = head;
         }
+    }
+
+    public static void main(String[] args) {
+        LRUCache<String,String> cache = new LRUCache<>(5);
+
+        cache.put("1","A");
+        cache.put("2","B");
+        cache.put("3","C");
+        cache.put("4","D");
+        cache.put("5","E");
+        cache.put("6","F");
+        cache.put("7","G");
+        cache.put("8","H");
+
+        System.out.println(cache.get("2"));
     }
 }
 
@@ -123,6 +138,9 @@ class Node<K,V> {
         this.key = key;
         this.value = value;
     }
+
+
+
 
 }
 
